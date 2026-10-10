@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>今天吃什么</title>
+  <style>
+*{box-sizing:border-box}body{margin:0;background:#eeeae0;color:#35392e;font:16px/1.65 "Microsoft YaHei","Segoe UI",sans-serif}main{max-width:1080px;margin:auto;padding:28px 40px 32px}header{margin:0 0 22px}h1{font-size:34px;line-height:1.3;letter-spacing:.05em;margin:0 0 4px}header p{color:#6c7161;margin:0}.tool{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start;gap:36px;padding:26px 34px 32px;background:#fcfaf4;border:1px solid #d3ccbc;border-radius:28px}.wheel{min-width:0}.wheel svg{width:100%;max-width:500px;display:block;margin:auto;pointer-events:none}.controls{padding-left:34px;border-left:1px solid #e2ddcf;min-width:0;align-self:center}.lead{color:#69715f;margin:0 0 20px;font-size:18px}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #895432;outline-offset:3px}.choose{display:block;width:100%;padding:15px 12px;border:1px solid #934728;border-bottom:4px solid #934728;border-radius:12px;background:#bb603b;color:#fffaf1;font-weight:700;font-size:19px}.choose:hover:not(:disabled){background:#a95030}button:disabled{background:#ddd8c9;color:#666758;border-color:#b9b09c;cursor:not-allowed}.result{min-height:210px;margin-top:22px;padding:20px 18px;background:#f0eee2;border:1px solid #d9d3c0;border-radius:16px;text-align:center}.label-slot{min-height:24px}.result p{margin:0;font-size:14px;color:#6c705e}.result strong{display:flex;align-items:center;justify-content:center;min-height:82px;font-size:23px;font-weight:500;line-height:1.45;color:#394131;overflow-wrap:anywhere;margin:6px 0}.result strong.chosen{font-size:38px;font-weight:700}.result .status{min-height:44px;font-size:14px;color:#69462f;margin:4px 0 0;overflow-wrap:anywhere}.management,.legend{margin-top:18px;border:1px solid #d3ccbc;border-radius:14px;background:#f6f3ea;padding:16px 22px;color:#5f6857;font-size:15px}summary{cursor:pointer;width:fit-content;max-width:100%;overflow-wrap:anywhere}.legend p{margin:0 0 8px;font-weight:700}.legend ol{columns:2;column-gap:32px;margin:0;padding-left:28px}.legend li{break-inside:avoid;overflow-wrap:anywhere;padding:3px 0}form{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}label{flex-basis:100%}input{flex:1 1 140px;min-width:0;width:100%;padding:8px 12px;border:1px solid #b6ad98;border-radius:8px;background:#fcfaf4;color:#35392e}.management button{padding:7px 14px;border:1px solid #b6ad98;background:#fcfaf4;color:#35392e;border-radius:8px}.management button:disabled{background:#ddd8c9;color:#666758}#menus{list-style:none;padding:0;margin:12px 0 0}#menus li{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid #ddd7c8}#menus span{min-width:0;overflow-wrap:anywhere}#menus button{flex-shrink:0}#add-message{overflow-wrap:anywhere;color:#69462f;font-size:14px;margin:12px 0 0}#add-message:empty{margin:0}[hidden]{display:none!important}@media(max-width:760px){main{padding:20px 16px}.tool{grid-template-columns:1fr;gap:24px;padding:18px 18px 24px}.controls{padding:20px 0 0;border-left:0;border-top:1px solid #e2ddcf}h1{font-size:28px}.wheel svg{max-width:420px}.result{margin-top:18px}.lead{font-size:16px}.legend ol{columns:1}.result .status{min-height:68px}}
+
+    :root { color-scheme: light; }
+    #empty-menu { font-size: 14px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    .sound-toggle { display:flex; align-items:center; gap:8px; flex-basis:auto; font-size:15px; color:#5f6857; cursor:pointer; }
+    .sound-toggle input { width:18px; height:18px; flex:none; accent-color:#a95030; }
+    #sound-message { flex-basis:100%; margin:0; font-size:14px; color:#69462f; }
+    #sound-message:empty { display:none; }
+  </style>
+</head>
+<body>
+  <main>
+    <header><h1>今天吃什么</h1><label class="sound-toggle"><input id="sound-enabled" type="checkbox">声音<span id="sound-state">关闭</span></label><p id="sound-message" role="status" aria-live="polite"></p></header>
+    <section class="tool">
+      <div class="wheel"><svg id="wheel" viewBox="0 0 520 520" role="img" aria-label="选餐转盘"><defs>
+ <linearGradient id="rim" x1="0" y1="0" x2="0.65" y2="1"><stop stop-color="#fffef4"/><stop offset=".45" stop-color="#dfd8c7"/><stop offset="1" stop-color="#c2b89f"/></linearGradient>
+ <linearGradient id="hub" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#fff6df"/><stop offset=".5" stop-color="#d9c9a8"/><stop offset="1" stop-color="#b59e76"/></linearGradient>
+ <linearGradient id="arrow" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#713f2e"/><stop offset=".47" stop-color="#c8794f"/><stop offset=".5" stop-color="#a45536"/><stop offset="1" stop-color="#80422e"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#625344" flood-opacity=".20"/></filter>
+ <filter id="pointer-shadow" x="-80%" y="-50%" width="260%" height="220%"><feDropShadow dx="1" dy="3" stdDeviation="2" flood-color="#493726" flood-opacity=".25"/></filter>
+</defs><g filter="url(#shadow)">
+ <circle cx="260" cy="277" r="232" fill="#9a8b72"/>
+ <circle cx="260" cy="266" r="232" fill="url(#rim)" stroke="#b7ab91" stroke-width="1"/>
+ <circle cx="260" cy="266" r="225" fill="none" stroke="#fffdf1" stroke-width="2" opacity=".85"/>
+ <circle cx="260" cy="266" r="212" fill="#8f826c"/>
+ <circle cx="260" cy="266" r="208" fill="#e6e1d5"/>
+</g><g id="wheel-disc"></g><circle cx="260" cy="270" r="32" fill="#625341" opacity=".18"/>
+<circle cx="260" cy="266" r="30" fill="url(#hub)" stroke="#a38a63" stroke-width="1.5"/>
+<circle cx="260" cy="265" r="21" fill="none" stroke="#fff6e2" stroke-width="1.5"/>
+<circle cx="260" cy="266" r="5" fill="#a28a63"/>
+<g filter="url(#pointer-shadow)">
+ <path d="M242 27 Q260 18 278 27 L260 80 Z" fill="url(#arrow)" stroke="#75412d" stroke-width="1"/>
+ <path d="M246 29 L260 72 L260 26" fill="#e5b28b" opacity=".38"/>
+ <circle cx="260" cy="27" r="6" fill="#e8d8b4" stroke="#8f7852"/>
+</g>
+</svg></div>
+      <div class="controls">
+        <button class="choose" id="choose" type="button" {{choose_disabled}}>帮我选一个</button>
+        <section class="result" aria-label="选餐结果">
+          <div class="label-slot"><p id="result-label" hidden>今天吃</p></div>
+          <strong id="result" role="status" aria-live="polite">{{initial_result}}</strong>
+          <p class="status" id="spin-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+    <section class="legend" id="wheel-key" hidden>
+      <p>编号与菜名对照</p>
+      <ol id="wheel-legend"></ol>
+    </section>
+    <details class="management" id="menu-management">
+      <summary id="management-title">管理菜单（共 {{count}} 道）</summary>
+      <form id="add-menu">
+        <label for="menu-name">菜名</label>
+        <input id="menu-name" name="menu" type="text" autocomplete="off">
+        <button id="add" type="submit">添加</button>
+      </form>
+      <ul id="menus">{{menus}}</ul>
+      <p id="empty-menu" {{empty_hidden}}>先添加一道菜</p>
+      <p id="add-message" role="status" aria-live="polite"></p>
+    </details>
+  </main>
+  <script src="/sound-data.js"></script>
+  <script src="/sound.js"></script>
+  <script src="/wheel.js"></script>
+  <script>
+    const soundToggle = document.getElementById('sound-enabled');
+    const soundState = document.getElementById('sound-state');
+    const soundMessage = document.getElementById('sound-message');
+    const sound = typeof MealSounds === 'function' ? new MealSounds() : {
+      enabled: false, setEnabled(value) { this.enabled = value; },
+      unlock() {}, play() {}, beginSpin() {}, tick() {}, stopTicks() {}, stopAll() {}
+    };
+    sound.onUnavailable = () => { soundMessage.textContent = '声音暂时无法播放，选餐和菜单管理仍可使用。'; };
+    function refreshSound() {
+      soundToggle.checked = sound.enabled;
+      soundState.textContent = sound.enabled ? '开启' : '关闭';
+    }
+    soundToggle.addEventListener('change', () => {
+      sound.setEnabled(soundToggle.checked);
+      soundMessage.textContent = '';
+      if (sound.enabled) sound.unlock();
+      refreshSound();
+    });
+    window.addEventListener('pagehide', () => sound.stopAll());
+    document.addEventListener('visibilitychange', () => { if (document.hidden) sound.stopAll(); });
+    refreshSound();
+    if (typeof MealSounds !== 'function') sound.onUnavailable();
+    const button = document.getElementById('choose');
+    const result = document.getElementById('result');
+    const resultLabel = document.getElementById('result-label');
+
+    function setResult(text, chosen = false) {
+      result.textContent = text;
+      result.classList.toggle('chosen', chosen);
+      resultLabel.hidden = !chosen;
+    }
+    const form = document.getElementById('add-menu');
+    const input = document.getElementById('menu-name');
+    const addButton = document.getElementById('add');
+    const message = document.getElementById('add-message');
+    const menuList = document.getElementById('menus');
+    const managementTitle = document.getElementById('management-title');
+    const emptyMenu = document.getElementById('empty-menu');
+    const spinStatus = document.getElementById('spin-status');
+    const wheel = typeof MealWheel === 'function' ? new MealWheel(document.getElementById('wheel'), document.getElementById('wheel-key'), document.getElementById('wheel-legend')) : null;
+    let currentMenus = [...menuList.querySelectorAll('li span')].map((item) => item.textContent);
+    let selectedMenu = null;
+    let busy = false;
+
+    function setBusy(value) {
+      busy = value;
+      button.disabled = busy || menuList.children.length === 0;
+      addButton.disabled = busy;
+      input.disabled = busy;
+      menuList.querySelectorAll('button').forEach((item) => { item.disabled = busy; });
+    }
+
+    function renderMenus(menus, draw = true) {
+      currentMenus = menus.slice();
+      menuList.replaceChildren(...menus.map((menu) => {
+        const item = document.createElement('li');
+        const name = document.createElement('span');
+        name.textContent = menu;
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.dataset.menu = menu;
+        remove.textContent = '删除';
+        remove.setAttribute('aria-label', `删除${menu}`);
+        item.append(name, ' ', remove);
+        return item;
+      }));
+      managementTitle.textContent = `管理菜单（共 ${menus.length} 道）`;
+      emptyMenu.hidden = menus.length !== 0;
+      setBusy(busy);
+      if (draw) syncWheel();
+    }
+
+    function syncWheel() {
+      try {
+        wheel.setMenus(currentMenus, selectedMenu);
+      } catch (error) {
+        spinStatus.textContent = '转盘绘制失败，请刷新页面后重试。菜单管理仍可使用。';
+      }
+    }
+
+    button.addEventListener('click', async () => {
+      if (busy || currentMenus.length === 0) return;
+      sound.unlock();
+      sound.play('click');
+      setBusy(true);
+      selectedMenu = null;
+      setResult('正在选餐');
+      spinStatus.textContent = '暂时不能再次选餐、添加或删除。';
+      let phase = 'request';
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      try {
+        const response = await fetch('/api/choose', { cache: 'no-store', signal: controller.signal });
+        const data = await response.json();
+        clearTimeout(timer);
+        if (!response.ok) {
+          if (Array.isArray(data.menus)) renderMenus(data.menus);
+          throw new Error(data.error || '选择请求失败');
+        }
+        if (!Array.isArray(data.menus) || !data.menus.length || data.menus.some((name) => typeof name !== 'string' || !name.trim()) || new Set(data.menus).size !== data.menus.length || !Number.isInteger(data.index) || data.index < 0 || data.index >= data.menus.length || data.menus[data.index] !== data.menu) {
+          throw new Error('选餐响应不完整，请重试');
+        }
+        phase = 'draw';
+        renderMenus(data.menus, false);
+        wheel.setMenus(data.menus);
+        phase = 'animation';
+        sound.beginSpin();
+        await wheel.spin(data.index, now => sound.tick(now));
+        sound.stopTicks();
+        selectedMenu = data.menu;
+        setResult(selectedMenu, true);
+        spinStatus.textContent = '';
+        sound.play('done');
+      } catch (error) {
+        sound.stopAll();
+        selectedMenu = null;
+        if (currentMenus.length === 0) {
+          setResult('先添加一道菜');
+          spinStatus.textContent = '';
+        } else {
+          setResult('本轮选餐未完成，请重试。');
+          spinStatus.textContent = phase === 'animation' ? '转盘动画异常或未按时完成，请重试。'
+            : phase === 'draw' ? '转盘绘制失败，请刷新页面后重试。'
+            : error.name === 'AbortError' ? '选餐请求超时，请确认启动窗口仍然打开后重试。'
+            : `选餐请求失败：${error.message}。请确认启动窗口仍然打开后重试。`;
+        }
+      } finally {
+        clearTimeout(timer);
+        setBusy(false);
+      }
+    });
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (busy) return;
+      sound.unlock();
+      sound.stopAll();
+      const wasEmpty = menuList.children.length === 0;
+      setBusy(true);
+      message.textContent = '';
+      try {
+        const response = await fetch('/api/menus', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ menu: input.value })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          message.textContent = data.error || '添加失败，请重试。';
+          return;
+        }
+        renderMenus(data.menus);
+        input.value = '';
+        message.textContent = `已添加并保存：${data.menu}`;
+        if (wasEmpty) setResult('点击按钮，开始选餐。');
+        sound.play('saved');
+      } catch (error) {
+        sound.stopAll();
+        message.textContent = '暂时无法添加，请确认启动窗口仍然打开，再重试。';
+      } finally {
+        setBusy(false);
+        input.focus();
+      }
+    });
+
+    menuList.addEventListener('click', async (event) => {
+      const remove = event.target.closest('button[data-menu]');
+      if (!remove || busy) return;
+      const menu = remove.dataset.menu;
+      if (!window.confirm(`确定删除“${menu}”吗？`)) return;
+      sound.unlock();
+      sound.stopAll();
+      setBusy(true);
+      message.textContent = '';
+      try {
+        const response = await fetch('/api/menus/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ menu })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          message.textContent = data.error || '删除未成功，请重试。';
+          return;
+        }
+        renderMenus(data.menus, false);
+        if (data.menus.length === 0) {
+          selectedMenu = null;
+          setResult('先添加一道菜');
+        } else if (selectedMenu === menu) {
+          selectedMenu = null;
+          setResult('已删除当前选餐结果，请重新选择。');
+        }
+        syncWheel();
+        message.textContent = `已删除并保存：${data.menu}`;
+        sound.play('saved');
+      } catch (error) {
+        sound.stopAll();
+        message.textContent = '未能确认删除结果，请确认启动窗口仍然打开，并刷新页面核对后再重试。';
+      } finally {
+        setBusy(false);
+      }
+    });
+    syncWheel();
+  </script>
+</body>
+</html>

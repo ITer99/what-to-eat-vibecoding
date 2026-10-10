@@ -1,0 +1,28 @@
+{
+  "missing": [
+    "未找到可运行的 Python，程序尚未启动。",
+    "可能尚未安装 Python，或安装和命令配置存在问题。",
+    "请从 https://www.python.org/downloads/windows/ 安装 Python 3.8 或更新版本。",
+    "安装时包含 Python Launcher，并勾选将 Python 加入 PATH；建议选择仍受维护的版本。",
+    "安装后重新双击 start.bat。详细步骤见同目录 README.md。"
+  ],
+  "old": [
+    "Python 版本过低，程序尚未启动。",
+    "当前程序至少需要 Python 3.8，不要求完全相同的小版本。",
+    "检测到的版本："
+  ],
+  "upgrade": [
+    "请安装 Python 3.8 或更新版本；建议选择仍受维护的版本。",
+    "下载地址：https://www.python.org/downloads/windows/",
+    "安装后重新双击 start.bat。详细步骤见同目录 README.md。"
+  ],
+  "failed": [
+    "程序未能正常启动或运行（退出码：{0}）。",
+    "请查看上方具体错误，确认程序文件完整、文件夹可写。",
+    "若提示菜单文件损坏，请先备份 data 文件夹，再恢复有效备份；不要直接删除个人菜单。",
+    "其他情况可参考同目录 README.md 的常见问题，并保留上方错误信息。"
+  ],
+  "wait": [
+    "按任意键关闭此窗口；处理问题后再重新启动。"
+  ]
+}

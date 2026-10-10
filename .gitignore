@@ -1,0 +1,21 @@
+# Local personal menus and backups
+/data/
+/menus.json
+/menus.json.*
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Temporary files, logs and credentials
+*.tmp
+*.bak
+*.log
+.env
+.env.*
+
+# Windows metadata
+Thumbs.db
+Desktop.ini
